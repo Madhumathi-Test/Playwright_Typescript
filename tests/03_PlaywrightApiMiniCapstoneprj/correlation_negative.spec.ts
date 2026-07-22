@@ -8,17 +8,6 @@ import {Logger} from '../../utils/logger';
  
 test.describe('Correlation and Negative scenarios - API Testing', () => {
 
-    const url = 'https://jsonplaceholder.typicode.com/users';
- 
-    // Read JSON data from file
-    const filePath = 'files/usersData.json';
-    const usersData = JSON.parse(fs.readFileSync(filePath, 'utf8'));
- 
-    // Define headers separately
-    const headers = {
-        'Content-type': 'application/json; charset=UTF-8'
-    };
-
     test.beforeAll(async () => {
         Logger.info('Starting Correlation API Testing');
     });
@@ -35,15 +24,18 @@ test.describe('Correlation and Negative scenarios - API Testing', () => {
         Logger.info('All Correlation API tests completed.');
     });
  
-    test.skip('TC_01 - Correlation ID, capture User ID, fetch posts using Userid=1', async ({ request }) => {
+    test('TC_01 - Correlation ID, capture User ID, fetch posts using Userid=1', async ({ request }) => {
  
         // Step 1: Fetching post of id =1 
         const id = 1;
-        // const firstResponse = await ApiUtils.getRequest(request, "/users/1")
+    
+        // Retrieving the first response
         const firstResponse = await ApiUtils.getRequest(request, `/users/${id}`)
         
+        // Validate the response
         expect(firstResponse.status()).toBe(200);
     
+        // Converting to Json
         const jsonData = await firstResponse.json();
         console.log('Response JSON:', jsonData);
     
@@ -51,13 +43,17 @@ test.describe('Correlation and Negative scenarios - API Testing', () => {
         const capturedId = jsonData.id;
         console.log('Captured ID:', capturedId);
   
+        // Fetching the second response
         const secondResponse = await ApiUtils.getRequest(request, `/posts?userId=${capturedId}`);
 
+        // Validate the status code
         expect(secondResponse.status()).toBe(200);
     
+        // Converting to Json format
         const secondJsonData = await secondResponse.json();
         console.log('Posts for Captured ID:', secondJsonData);
     
+        // Validating the length=10
         expect(secondJsonData.length).toBe(10); 
         
     });
@@ -69,8 +65,10 @@ test.describe('Correlation and Negative scenarios - API Testing', () => {
         const firstResponse = await ApiUtils.getRequest(request, "/posts")
         // const firstResponse = await ApiUtils.getRequest(request, `/users/${id}`)
         
+        // Validate Status code
         expect(firstResponse.status()).toBe(200);
     
+        // Converting to json format
         const postsjsonData = await firstResponse.json();
         Logger.info('Get All Users Response: ' + JSON.stringify(postsjsonData)); // this will return the strings
     
@@ -91,6 +89,7 @@ test.describe('Correlation and Negative scenarios - API Testing', () => {
             }
         }
         Logger.info(`Unique User Ids ${uniqueUserIds}`)
+        
         // Validate each user
         for (const userId of uniqueUserIds){
 
@@ -118,33 +117,38 @@ test.describe('Correlation and Negative scenarios - API Testing', () => {
             Logger.info(`Validated User ${user.name} and ${user.email}`);
 
             Logger.success("Advanced Correlation Test Completed successsfully");
-            
         }
         
     });
 
-    test.skip('TC_02 - Negative scenario to get users with invalid=99999', async ({ request }) => {
+    test('TC_02 - Negative scenario to get users with invalid=99999', async ({ request }) => {
  
         // Step 1: Fetching post of id =1 
         const id = 99999;
-        // const firstResponse = await ApiUtils.getRequest(request, "/users/1")
+        
+        // Fetching the request
         const firstResponse = await ApiUtils.getRequest(request, `/users/${id}`)
         
+        // Validate the status code
         expect(firstResponse.status()).toBe(404);
     
+        // Converting to Json format
         const jsonData = await firstResponse.json();
         console.log('Response JSON:', jsonData);
     });
 
     
-    test.skip('TC_03 - Negative scenario to get posts with invalid id=99999', async ({ request }) => {
+    test('TC_03 - Negative scenario to get posts with invalid id=99999', async ({ request }) => {
  
         const id = 99999;
+
         // const firstResponse = await ApiUtils.getRequest(request, "/users/1")
         const firstResponse = await ApiUtils.getRequest(request, `/posts/${id}`)
         
+        // Validate the Status code
         expect(firstResponse.status()).toBe(404);
     
+        // Converting to Json format
         const jsonData = await firstResponse.json();
         console.log('Response JSON:', jsonData);
 
