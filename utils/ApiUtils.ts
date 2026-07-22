@@ -20,26 +20,25 @@ export class ApiUtils {
 
     static async putRequest(request: APIRequestContext, endpoint: string, data: any) {
         const response = await request.put(`${this.baseURL}${endpoint}`, {
-            data: data,
             headers: {
                 'Content-Type': 'application/json'
-            }
+            },
+            data: data
         });
-        return response;
-    }
-
-    static async deleteRequest(request: APIRequestContext, endpoint: string) {
-        const response = await request.delete(`${this.baseURL}${endpoint}`);
         return response;
     }
 
     static async patchRequest(request: APIRequestContext, endpoint: string, data: any) {
-        const response = await request.put(`${this.baseURL}${endpoint}`, {
+        const response = await request.patch(`${this.baseURL}${endpoint}`, {
+            headers: {
+                'Content-Type': 'application/json'
+            },
             data: data
-            // headers: {
-            //     'Content-Type': 'application/json'
-            // }
         });
+        return response;
+    }
+    static async deleteRequest(request: APIRequestContext, endpoint: string) {
+        const response = await request.delete(`${this.baseURL}${endpoint}`);
         return response;
     }
 }

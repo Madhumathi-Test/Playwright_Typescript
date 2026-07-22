@@ -33,6 +33,7 @@ test.describe('Users API Testing', () => {
             
             const response = await ApiUtils.postRequest(request, '/users', userData);
 
+            // Validate status code
             expect(response.status()).toBe(201);
  
             const jsonData = await response.json();
@@ -51,16 +52,22 @@ test.describe('Users API Testing', () => {
         // const response = await request.get(url)
         const response = await ApiUtils.getRequest(request, '/users');
 
+        // Verify status code
         expect(response.status()).toBe(200);
 
         const jsonData = await response.json();
         // Logger.info('Get All Users Response: ' + jsonData); // this will return objects
 
-        // Records are returned
+        // Verify all users Records are returned
         Logger.info('Get All Users Response: ' + JSON.stringify(jsonData)); // this will return the strings
         
         // Validate that the response contains the expected number of users
         expect(jsonData.length).toBeGreaterThan(0);
+
+        // Validate every user has id, name, email
+        expect(jsonData.id).toBeDefined();
+        expect(jsonData.name).toBeDefined();
+        expect(jsonData.email).toBeDefined();
 
     });
 
@@ -71,6 +78,7 @@ test.describe('Users API Testing', () => {
         // const response = await ApiUtils.getRequest(request, '/users/1');
         const response = await ApiUtils.getRequest(request, `/posts/${id}`);
 
+        // Verify status code
         expect(response.status()).toBe(200);
 
         const jsonData = await response.json();
@@ -79,9 +87,8 @@ test.describe('Users API Testing', () => {
 
         // Validate that the response contains the expected user data
         expect(jsonData.id).toBe(id);
-        // expect(jsonData.name).toBeDefined();
-        // expect(jsonData.username).toBeDefined();
-        // expect(jsonData.email).toBeDefined();
+        expect(jsonData.name).not.toBe(" ");
+        expect(jsonData.email).toBeDefined();
     });
 
     test(`TC_04 - Update user by ID and validate the response`, async ({ request }) => {
@@ -96,6 +103,7 @@ test.describe('Users API Testing', () => {
 
         const response = await ApiUtils.patchRequest(request, `/users/${id}`, updatedUserData);
 
+        // Validate Status code
         expect(response.status()).toBe(200);
 
         const jsonData = await response.json();

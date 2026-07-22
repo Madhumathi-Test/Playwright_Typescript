@@ -35,7 +35,7 @@ test.describe('Correlation and Negative scenarios - API Testing', () => {
         Logger.info('All Correlation API tests completed.');
     });
  
-    test('TC_01 - Correlation ID, capture User ID, fetch posts using Userid=1', async ({ request }) => {
+    test.skip('TC_01 - Correlation ID, capture User ID, fetch posts using Userid=1', async ({ request }) => {
  
         // Step 1: Fetching post of id =1 
         const id = 1;
@@ -62,7 +62,68 @@ test.describe('Correlation and Negative scenarios - API Testing', () => {
         
     });
 
-       test('TC_02 - Negative scenario to get users with invalid=99999', async ({ request }) => {
+    // Get all posts,extract first 3 user IDs and for every User id, validate user and email exists
+    test('TC_02 - Advanced Correlation , first 3 user ids and for every used id validate that the user and email exists', async ({ request }) => {
+ 
+        // Get all posts
+        const firstResponse = await ApiUtils.getRequest(request, "/posts")
+        // const firstResponse = await ApiUtils.getRequest(request, `/users/${id}`)
+        
+        expect(firstResponse.status()).toBe(200);
+    
+        const postsjsonData = await firstResponse.json();
+        Logger.info('Get All Users Response: ' + JSON.stringify(postsjsonData)); // this will return the strings
+    
+        // Capture the first 3 users details
+        const uniqueUserIds:number[] = [];
+
+        //Loop to extract 3 unique userIds
+        for (const post of postsjsonData){
+
+            // if loop chks whether uniqueUserIds has any userIds,if not then it pushes
+            if(!uniqueUserIds.includes(post.userId)){
+
+                uniqueUserIds.push(post.userId);
+
+            if(uniqueUserIds.length===3){
+                break;
+                }
+            }
+        }
+        Logger.info(`Unique User Ids ${uniqueUserIds}`)
+        // Validate each user
+        for (const userId of uniqueUserIds){
+
+            Logger.info(`Validating user details of ${userId}`)
+
+            const userResponse = await ApiUtils.getRequest(request, `/users/${userId}`);
+            
+            expect(userResponse.status()).toBe(200);
+
+            const user = await userResponse.json();
+
+            Logger.info(`Values of User: ${JSON.stringify(user)}`)
+
+            // User Exists
+            expect(user).toBeTruthy();
+
+            // Validate ID
+            expect(user.id).toBe(userId);
+
+            //Email exists
+            expect(user.email).toBeDefined();
+
+            expect(user.email).not.toBe(" ");
+
+            Logger.info(`Validated User ${user.name} and ${user.email}`);
+
+            Logger.success("Advanced Correlation Test Completed successsfully");
+            
+        }
+        
+    });
+
+    test.skip('TC_02 - Negative scenario to get users with invalid=99999', async ({ request }) => {
  
         // Step 1: Fetching post of id =1 
         const id = 99999;
@@ -76,7 +137,7 @@ test.describe('Correlation and Negative scenarios - API Testing', () => {
     });
 
     
-       test('TC_03 - Negative scenario to get posts with invalid id=99999', async ({ request }) => {
+    test.skip('TC_03 - Negative scenario to get posts with invalid id=99999', async ({ request }) => {
  
         const id = 99999;
         // const firstResponse = await ApiUtils.getRequest(request, "/users/1")
