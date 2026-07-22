@@ -40,8 +40,8 @@ test.describe('Path and Query Parameter API Testing using Posts URL', () => {
         const response = await ApiUtils.getRequest(request, "/posts");
 
         // Validate Status code
-        // expect(response.status()).toBe(200);
-        expect(response.status()).toBe(400);
+        expect(response.status()).toBe(200);
+        // expect(response.status()).toBe(400);
 
         const jsonData = await response.json();
         Logger.info('Get All Posts Response: ' + JSON.stringify(jsonData));
