@@ -1,0 +1,19 @@
+[
+  {
+    "title": "1-Playwright API Test - Data from File",
+    "body": "1-This post was created by reading data from a JSON file",
+    "userId": 7
+  },
+
+  {
+    "title": "2-Playwright API Test - Data from File",
+    "body": "2-This post was created by reading data from a JSON file",
+    "userId": 8
+  },
+
+  {
+    "title": "3-Playwright API Test - Data from File",
+    "body": "3-This post was created by reading data from a JSON file",
+    "userId": 9
+  }
+]
